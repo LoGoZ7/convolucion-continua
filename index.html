@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080f22">
+  <meta name="description" content="Presentación interactiva y sin dependencias sobre la convolución continua: visualización, ejemplos resueltos y aplicaciones.">
+  <title>Convolución continua · Laboratorio interactivo</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#inicio" id="homeLink" aria-label="Ir al inicio">
+      <span class="brand-mark">∗</span><span>Señales<span class="brand-soft">/</span>Sistemas</span>
+    </a>
+    <div class="top-center"><span class="course-tag">TRABAJO 2</span><span class="topic-name">Convolución continua</span></div>
+    <div class="top-actions">
+      <button type="button" class="ghost-icon" id="helpBtn" aria-label="Mostrar ayuda de navegación" title="Atajos de teclado">?</button>
+      <span class="slide-counter" aria-live="polite"><b id="currentSlide">01</b> <span>/</span> <span id="totalSlides">11</span></span>
+    </div>
+  </header>
+  <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-fill"></div></div>
+
+  <main id="deck">
+    <!-- 01 PORTADA -->
+    <section class="slide cover is-active" data-title="Inicio" id="inicio" aria-label="Diapositiva 1: Portada">
+      <div class="cover-copy">
+        <div class="eyebrow"><span class="pulse-dot"></span> LABORATORIO VISUAL · SEÑALES Y SISTEMAS</div>
+        <h1>Convolución<br><span class="gradient-text">continua.</span></h1>
+        <p class="lead">Dos señales se encuentran, se multiplican y se integran. Descubre cómo surge la respuesta de un sistema, <strong>paso a paso y en movimiento.</strong></p>
+        <div class="cover-actions"><button type="button" class="btn btn-primary" data-goto="1">Empezar a explorar <span aria-hidden="true">→</span></button><span class="mini-hint">11 pantallas · 3 laboratorios · 1 reto</span></div>
+      </div>
+      <div class="hero-visual" aria-hidden="true"><div class="hero-graph-head"><span class="hero-orb"></span> CONVOLUCIÓN EN TIEMPO REAL <span class="hero-live">● LIVE</span></div><canvas id="heroCanvas" aria-label="Ilustración animada de convolución"></canvas><div class="hero-legend"><span><i class="key-cyan"></i>x(t)</span><span><i class="key-pink"></i>h(t)</span><span><i class="key-amber"></i>y(t)</span></div></div>
+      <div class="cover-footer">Una presentación que se puede tocar, no solo leer. <span>HTML · CSS · JavaScript · 100 % offline</span></div>
+    </section>
+
+    <!-- 02 INTUICIÓN -->
+    <section class="slide" data-title="Intuición" aria-label="Diapositiva 2: La intuición">
+      <div class="section-head"><span class="section-num">01 / IDEA CENTRAL</span><h2>¿Qué hace la <span class="gradient-text">convolución</span>?</h2><p>Permite calcular la salida de un sistema lineal e invariante en el tiempo (LTI) a partir de su entrada y su respuesta al impulso.</p></div>
+      <div class="system-diagram">
+        <div class="system-stage"><div class="stage-caption">ENTRADA</div><div class="stage-name">x(t)</div><svg viewBox="0 0 220 95" aria-hidden="true"><path class="axis-line" d="M8 75H214"/><path class="svg-cyan" d="M8 75 L34 75 L34 24 L137 24 L137 75 L214 75"/></svg><span class="small-muted">¿Qué señal enviamos?</span></div>
+        <div class="diagram-arrow"><span>→</span><small>se aplica a</small></div>
+        <div class="system-stage core-stage"><div class="stage-caption">SISTEMA LTI</div><div class="system-core">h(t)</div><span class="small-muted">¿Cómo reacciona a un impulso?</span></div>
+        <div class="diagram-arrow"><span>→</span><small>produce</small></div>
+        <div class="system-stage"><div class="stage-caption">SALIDA</div><div class="stage-name amber">y(t)</div><svg viewBox="0 0 220 95" aria-hidden="true"><path class="axis-line" d="M8 75H214"/><path class="svg-amber" d="M8 75 L34 75 C56 75 61 24 87 24 L137 24 C151 24 158 75 181 75 L214 75"/></svg><span class="small-muted">¿Qué recibimos?</span></div>
+      </div>
+      <div class="insight-grid"><div class="insight"><span class="insight-icon">01</span><strong>La entrada</strong><p>Una señal que varía con el tiempo: pulso, escalón, audio o transmisión.</p></div><div class="insight"><span class="insight-icon">02</span><strong>La memoria del sistema</strong><p>La respuesta h(t) describe cómo influye cada instante anterior.</p></div><div class="insight"><span class="insight-icon">03</span><strong>El resultado</strong><p>La salida suma los aportes ponderados de toda la entrada.</p></div></div>
+      <p class="callout"><span>✦</span> En un sistema LTI con condiciones iniciales nulas: <strong>y(t) = x(t) ∗ h(t)</strong>.</p>
+    </section>
+
+    <!-- 03 MÉTODO -->
+    <section class="slide" data-title="Fórmula y pasos" aria-label="Diapositiva 3: Fórmula de convolución y procedimiento">
+      <div class="section-head"><span class="section-num">02 / EL MÉTODO</span><h2>Una integral, <span class="gradient-text">cuatro acciones.</span></h2><p>La variable τ recorre la señal. El tiempo t indica en qué instante queremos conocer la salida.</p></div>
+      <div class="main-equation" role="math" aria-label="y de t igual integral desde menos infinito hasta infinito de x de tau por h de t menos tau diferencial tau"><span class="eq-y">y(t)</span> <span class="eq-equal">=</span> <span class="integral"><span class="lim top">+∞</span>∫<span class="lim bottom">−∞</span></span> <span class="eq-x">x(τ)</span> <span class="eq-times">·</span> <span class="eq-h">h(t − τ)</span> <span class="eq-d">dτ</span></div>
+      <div class="steps-grid">
+        <article class="step-card"><span class="step-n">01</span><div class="step-icon">↔</div><h3>Reflejar</h3><p>Cambiar h(τ) por <strong>h(−τ)</strong>: voltear la respuesta horizontalmente.</p></article>
+        <article class="step-card"><span class="step-n">02</span><div class="step-icon">⇥</div><h3>Desplazar</h3><p>Mover la señal reflejada para obtener <strong>h(t − τ)</strong>.</p></article>
+        <article class="step-card"><span class="step-n">03</span><div class="step-icon">×</div><h3>Multiplicar</h3><p>Calcular, para cada τ, el producto <strong>x(τ)h(t − τ)</strong>.</p></article>
+        <article class="step-card"><span class="step-n">04</span><div class="step-icon">∫</div><h3>Integrar</h3><p>Sumar el área con signo: ese valor es <strong>y(t)</strong>.</p></article>
+      </div>
+      <div class="tip-row"><span class="tip-tag">OJO</span> No se multiplica x(t) por h(t) punto a punto: <strong>primero se refleja y desplaza h</strong>, y después se integra respecto de τ.</div>
+    </section>
+
+    <!-- 04 LABORATORIO RECTÁNGULOS -->
+    <section class="slide lab-slide" data-title="Laboratorio de pulsos" aria-label="Diapositiva 4: Laboratorio interactivo de pulsos rectangulares">
+      <div class="section-head compact-head"><span class="section-num">03 / LABORATORIO INTERACTIVO</span><h2>Arrastra el tiempo. <span class="gradient-text">Mira el área.</span></h2><p>Dos pulsos de amplitud 1: <span class="signal-x">x(τ) = 1 en [0, 2]</span> y <span class="signal-h">h(τ) = 1 en [0, 1]</span>; cero fuera.</p></div>
+      <div class="lab-layout">
+        <div class="lab-charts">
+          <div class="plot-card plot-main"><div class="plot-title"><span>01 · Superposición</span><div class="legend"><span><i class="key-cyan"></i>x(τ)</span><span><i class="key-pink"></i>h(t−τ)</span></div></div><canvas id="rectOverlap" class="plot-canvas" role="img" aria-label="Gráfica de x de tau y h de t menos tau"></canvas></div>
+          <div class="plot-row"><div class="plot-card"><div class="plot-title"><span>02 · Producto y área</span><span class="micro-chip">∫ dτ</span></div><canvas id="rectProduct" class="plot-canvas" role="img" aria-label="Producto de señales y área bajo la curva"></canvas></div><div class="plot-card"><div class="plot-title"><span>03 · Salida resultante</span><span class="micro-chip">y(t)</span></div><canvas id="rectOutput" class="plot-canvas" role="img" aria-label="Convolución resultante con marcador de tiempo"></canvas></div></div>
+        </div>
+        <aside class="lab-panel"><span class="panel-label">CONTROLA EL INSTANTE</span><div class="big-time">t = <strong id="rectTimeText">1.50</strong> <small>s</small></div><input class="range wide" type="range" id="rectTime" min="-1" max="4" step="0.01" value="1.5" aria-label="Instante t de la convolución de los pulsos"><div class="range-ends"><span>−1 s</span><span>4 s</span></div><div class="control-row"><button type="button" class="btn btn-play" id="rectPlay" aria-pressed="false">▶ Reproducir</button><button type="button" class="btn btn-icon" id="rectReset" title="Reiniciar ejemplo" aria-label="Reiniciar ejemplo">↺</button></div><div class="metric-box"><span>LONGITUD DE SOLAPAMIENTO</span><strong id="rectValue">1.00</strong><span class="metric-unit">y(t) = área del producto</span></div><div class="interval-display"><span>INTERVALO QUE SE SUPERPONE</span><strong id="rectInterval">[0.50, 1.50]</strong></div><p id="rectExplanation" class="context-caption" aria-live="polite">Los pulsos se intersectan en un tramo de longitud 1.</p></aside>
+      </div>
+    </section>
+
+    <!-- 05 SOLUCIÓN ANALÍTICA -->
+    <section class="slide" data-title="Solución exacta" aria-label="Diapositiva 5: Ejemplo resuelto analíticamente">
+      <div class="section-head compact-head"><span class="section-num">04 / EJEMPLO RESUELTO</span><h2>De la animación a la <span class="gradient-text">solución exacta.</span></h2><p>Para x(t) = 1 en [0,2] y h(t) = 1 en [0,1], la integral solo cuenta la longitud de la intersección.</p></div>
+      <div class="solution-layout"><div class="formula-panel"><div class="formula-heading">INTEGRAL DEL EJEMPLO</div><div class="math-line">y(t) = ∫<sub>máx(0, t−1)</sub><sup>mín(2, t)</sup> 1 dτ</div><div class="math-line small">si hay intersección; en otro caso, y(t)=0.</div><div class="separator"></div><div class="formula-heading">RESULTADO POR TRAMOS</div><div class="piecewise"><span class="brace">{</span><div class="cases"><div><b>0</b><span>t &lt; 0</span></div><div><b>t</b><span>0 ≤ t &lt; 1</span></div><div><b>1</b><span>1 ≤ t &lt; 2</span></div><div><b>3 − t</b><span>2 ≤ t &lt; 3</span></div><div><b>0</b><span>t ≥ 3</span></div></div></div><div class="math-footer">y(t) tiene forma de <strong>trapecio</strong>.</div></div><div class="plot-card analytic-plot"><div class="plot-title"><span>Gráfica de y(t)</span><span class="micro-chip">solución exacta</span></div><canvas id="analyticCanvas" class="plot-canvas" role="img" aria-label="Gráfica por tramos trapezoidal de la convolución"></canvas><div class="regions"><span><i class="region-dot one"></i>Crece: 0 a 1</span><span><i class="region-dot two"></i>Constante: 1 a 2</span><span><i class="region-dot three"></i>Decrece: 2 a 3</span></div></div></div><p class="callout"><span>✦</span> Un pulso de duración 2 convolucionado con otro de duración 1 produce una señal con soporte de <strong>0 a 3 segundos</strong>.</p>
+    </section>
+
+    <!-- 06 EXPLORADOR DE ANCHOS -->
+    <section class="slide lab-slide" data-title="Explorador de duraciones" aria-label="Diapositiva 6: Exploración de duraciones y amplitudes">
+      <div class="section-head compact-head"><span class="section-num">05 / CAMBIA EL EXPERIMENTO</span><h2>¿Y si los pulsos <span class="gradient-text">duran distinto</span>?</h2><p>Modifica sus anchos y comprueba cómo cambia el máximo y la duración de la convolución.</p></div>
+      <div class="explore-layout"><div class="explore-left"><div class="plot-card"><div class="plot-title"><span>Posición de ambos pulsos</span><div class="legend"><span><i class="key-cyan"></i>x(τ)</span><span><i class="key-pink"></i>h(t−τ)</span></div></div><canvas id="exploreOverlap" class="plot-canvas" role="img" aria-label="Pulsos rectangulares de anchura ajustable"></canvas></div><div class="plot-card"><div class="plot-title"><span>Salida según la duración</span><span class="micro-chip">interactiva</span></div><canvas id="exploreOutput" class="plot-canvas" role="img" aria-label="Salida calculada para duraciones elegidas"></canvas></div></div><aside class="lab-panel"><span class="panel-label">PARÁMETROS</span><div class="knob-heading"><label for="widthA">Duración de x(t)</label><strong class="signal-x"><span id="widthAText">2.0</span> s</strong></div><input id="widthA" type="range" class="range" min="0.5" max="3" step="0.1" value="2"/><div class="knob-heading"><label for="widthB">Duración de h(t)</label><strong class="signal-h"><span id="widthBText">1.0</span> s</strong></div><input id="widthB" type="range" class="range" min="0.5" max="3" step="0.1" value="1"/><div class="knob-heading"><label for="exploreTime">Instante t</label><strong><span id="exploreTimeText">1.50</span> s</strong></div><input id="exploreTime" type="range" class="range" min="-0.5" max="4" step="0.02" value="1.5"/><div class="result-list"><div><span>Área actual y(t)</span><strong id="exploreY">1.00</strong></div><div><span>Altura máxima</span><strong id="exploreMax">1.00</strong></div><div><span>Fin del soporte</span><strong id="exploreSupport">3.00 s</strong></div></div><button type="button" class="btn btn-outline" id="exploreReset">Restablecer duraciones ↺</button></aside></div><p class="tip-row">Observa: si los anchos son iguales, aparece un <strong>triángulo</strong>; si son diferentes, aparece un <strong>trapecio</strong>. La altura máxima es mín(a,b).</p>
+    </section>
+
+    <!-- 07 SISTEMA RC -->
+    <section class="slide lab-slide" data-title="Escalón y sistema RC" aria-label="Diapositiva 7: Convolución del escalón con respuesta exponencial">
+      <div class="section-head compact-head"><span class="section-num">06 / SEGUNDO EJEMPLO</span><h2>Del escalón a una <span class="gradient-text">respuesta suave.</span></h2><p>Entrada escalón unitario x(t)=u(t) y respuesta al impulso de un filtro RC: h(t)=(1/T<sub>c</sub>)e<sup>−t/T<sub>c</sub></sup>u(t).</p></div>
+      <div class="lab-layout"><div class="lab-charts"><div class="plot-card plot-main"><div class="plot-title"><span>Respuesta desplazada h(t−τ) · entrada u(τ)</span><div class="legend"><span><i class="key-cyan"></i>u(τ)</span><span><i class="key-pink"></i>h(t−τ)</span><span><i class="key-amber"></i>producto</span></div></div><canvas id="rcProduct" class="plot-canvas" role="img" aria-label="Convolución del escalón con la respuesta al impulso de un RC"></canvas></div><div class="plot-card"><div class="plot-title"><span>Salida del sistema RC</span><span class="micro-chip">y(t) = 1 − e<sup>−t/Tc</sup></span></div><canvas id="rcOutput" class="plot-canvas" role="img" aria-label="Respuesta al escalón de un sistema RC"></canvas></div></div><aside class="lab-panel"><span class="panel-label">EXPERIMENTA CON EL FILTRO</span><div class="knob-heading"><label for="rcTau">Constante de tiempo T<sub>c</sub></label><strong><span id="rcTauText">1.40</span> s</strong></div><input id="rcTau" class="range" type="range" min="0.5" max="3" step="0.05" value="1.4"/><div class="knob-heading"><label for="rcTime">Instante t</label><strong><span id="rcTimeText">2.20</span> s</strong></div><input id="rcTime" class="range" type="range" min="0" max="8" step="0.02" value="2.2"/><div class="control-row"><button type="button" class="btn btn-play" id="rcPlay" aria-pressed="false">▶ Reproducir</button><button type="button" class="btn btn-icon" id="rcReset" title="Reiniciar RC" aria-label="Reiniciar RC">↺</button></div><div class="metric-box"><span>RESPUESTA NORMALIZADA</span><strong id="rcValue">0.79</strong><span class="metric-unit">y(t) = (1 − e<sup>−t/Tc</sup>)u(t)</span></div><p class="context-caption"><strong>Dato:</strong> al llegar a t = T<sub>c</sub>, la salida alcanza aproximadamente el <strong>63,2 %</strong> de su valor final.</p></aside></div>
+    </section>
+
+    <!-- 08 APLICACIÓN TELECOM -->
+    <section class="slide lab-slide" data-title="Aplicación en telecom" aria-label="Diapositiva 8: Filtrado de pulso en comunicaciones">
+      <div class="section-head compact-head"><span class="section-num">07 / APLICACIÓN REAL</span><h2>¿Qué le pasa a un <span class="gradient-text">pulso transmitido</span>?</h2><p>Un canal con respuesta exponencial modifica los bordes del pulso. La convolución predice exactamente la forma recibida en este modelo.</p></div>
+      <div class="telecom-layout"><div class="plot-card telecom-chart"><div class="plot-title"><span>Señal enviada vs. señal filtrada</span><div class="legend"><span><i class="key-cyan"></i>transmitida</span><span><i class="key-amber"></i>recibida</span></div></div><canvas id="channelCanvas" class="plot-canvas" role="img" aria-label="Pulso transmitido y señal filtrada por canal con respuesta exponencial"></canvas><div class="chart-under">Modelo: x(t)=u(t)−u(t−D) &nbsp; | &nbsp; h(t)=(1/T<sub>c</sub>)e<sup>−t/T<sub>c</sub></sup>u(t)</div></div><aside class="lab-panel"><span class="panel-label">SIMULADOR DE CANAL</span><div class="knob-heading"><label for="chWidth">Duración del pulso D</label><strong><span id="chWidthText">2.00</span> s</strong></div><input id="chWidth" class="range" type="range" min="0.5" max="4" step="0.1" value="2"/><div class="knob-heading"><label for="chTau">Constante del canal T<sub>c</sub></label><strong><span id="chTauText">0.70</span> s</strong></div><input id="chTau" class="range" type="range" min="0.2" max="2.5" step="0.05" value="0.7"/><div class="metric-box"><span>VALOR RECIBIDO EN t = D</span><strong id="channelPeak">0.94</strong><span class="metric-unit">1 − e<sup>−D/Tc</sup></span></div><button type="button" id="chReset" class="btn btn-outline">Restablecer simulación ↺</button></aside></div><div class="application-insights"><div><span class="application-icon">⌁</span><strong>Suavizado</strong><p>La salida ya no tiene flancos instantáneos.</p></div><div><span class="application-icon">◷</span><strong>Memoria</strong><p>Después de terminar el pulso, la salida todavía decae.</p></div><div><span class="application-icon">≋</span><strong>Telecomunicaciones</strong><p>Este comportamiento ayuda a entender la distorsión temporal de pulsos.</p></div></div>
+    </section>
+
+    <!-- 09 PROPIEDADES -->
+    <section class="slide" data-title="Propiedades" aria-label="Diapositiva 9: Propiedades fundamentales de la convolución">
+      <div class="section-head"><span class="section-num">08 / PROPIEDADES ESENCIALES</span><h2>Reglas que <span class="gradient-text">simplifican problemas.</span></h2><p>Estas identidades se cumplen cuando las convoluciones involucradas están bien definidas.</p></div><div class="properties-grid"><article class="property"><span class="property-index">A</span><h3>Conmutativa</h3><div class="property-eq">x ∗ h = h ∗ x</div><p>Intercambiar el orden de las señales no altera la salida.</p></article><article class="property"><span class="property-index">B</span><h3>Asociativa</h3><div class="property-eq">(x ∗ h₁) ∗ h₂ = x ∗ (h₁ ∗ h₂)</div><p>Los sistemas LTI en cascada pueden agruparse.</p></article><article class="property"><span class="property-index">C</span><h3>Distributiva</h3><div class="property-eq">x ∗ (h₁ + h₂) = x ∗ h₁ + x ∗ h₂</div><p>La convolución distribuye sobre la suma.</p></article><article class="property"><span class="property-index">D</span><h3>Identidad</h3><div class="property-eq">x ∗ δ = x</div><p>La convolución con el impulso unitario ideal conserva la señal.</p></article></div><p class="callout"><span>✦</span> Para señales causales, la convolución puede escribirse como <strong>y(t) = ∫₀ᵗ x(τ)h(t−τ)dτ</strong>, para t ≥ 0.</p>
+    </section>
+
+    <!-- 10 AUTOEVALUACIÓN -->
+    <section class="slide" data-title="Ponte a prueba" aria-label="Diapositiva 10: Preguntas interactivas">
+      <div class="section-head compact-head"><span class="section-num">09 / MINI RETO</span><h2>¿Puedes calcular el área <span class="gradient-text">sin integrar</span>?</h2><p>Usa la intuición del solapamiento de los pulsos del primer laboratorio: anchuras 2 s y 1 s.</p></div><div class="quiz-layout"><div class="quiz-visual plot-card"><div class="plot-title"><span>Observa la salida y(t)</span><span id="quizGraphTime" class="micro-chip">t = 0.50 s</span></div><canvas id="quizCanvas" class="plot-canvas" role="img" aria-label="Gráfico que muestra el instante de la pregunta"></canvas></div><div class="quiz-box" id="quizBox"><div class="quiz-top"><span class="panel-label" id="quizProgress">PREGUNTA 1 DE 3</span><span class="quiz-score" id="quizScore">0 puntos</span></div><h3 id="quizQuestion">¿Cuál es el valor de la convolución en t = 0.5 s?</h3><div id="quizOptions" class="quiz-options"></div><div id="quizFeedback" class="quiz-feedback" aria-live="polite">Selecciona una respuesta para comprobarla.</div><button type="button" id="quizNext" class="btn btn-primary" disabled>Siguiente pregunta →</button></div></div>
+    </section>
+
+    <!-- 11 CONCLUSIONES -->
+    <section class="slide finale" data-title="Conclusiones" aria-label="Diapositiva 11: Conclusiones">
+      <div class="finale-orb" aria-hidden="true">∗</div><span class="section-num">10 / CONCLUSIÓN</span><h2>La convolución no es<br>solo una integral.<br><span class="gradient-text">Es una historia de solapamiento.</span></h2><p class="finale-lead">Reflejar → Desplazar → Multiplicar → Integrar.</p><div class="finale-stats"><div><strong>01</strong><span>Los pulsos producen triángulos o trapecios</span></div><div><strong>02</strong><span>Los filtros suavizan y retardan las transiciones</span></div><div><strong>03</strong><span>La respuesta al impulso define a un sistema LTI</span></div></div><div class="finale-actions"><button type="button" class="btn btn-primary" data-goto="3">Volver al laboratorio ↻</button><button type="button" class="btn btn-outline" data-goto="0">Ir al inicio ↑</button></div><div class="finale-footer">Trabajo 2 · Convolución continua · Proyecto original sin dependencias</div>
+    </section>
+  </main>
+
+  <footer class="nav-footer" aria-label="Controles de presentación"><div class="nav-left"><span class="keyboard-tip">← → cambiar diapositiva</span><span class="keyboard-tip secondary">Espacio: animar · F: pantalla completa</span></div><div id="stepDots" class="step-dots" aria-label="Seleccionar diapositiva"></div><div class="nav-buttons"><button id="prevBtn" class="nav-button" type="button" aria-label="Diapositiva anterior">← <span>Anterior</span></button><button id="nextBtn" class="nav-button nav-next" type="button" aria-label="Diapositiva siguiente"><span>Siguiente</span> →</button></div></footer>
+  <dialog id="helpDialog" class="help-dialog"><div class="dialog-head"><h2>Cómo explorar</h2><button id="closeHelp" type="button" aria-label="Cerrar ayuda">✕</button></div><p>Esta presentación funciona sin conexión a Internet. Usa el ratón, el teclado o las barras deslizantes.</p><div class="shortcut"><kbd>←</kbd> <kbd>→</kbd><span>Cambiar de diapositiva</span></div><div class="shortcut"><kbd>Espacio</kbd><span>Iniciar/pausar la animación del laboratorio activo</span></div><div class="shortcut"><kbd>F</kbd><span>Alternar pantalla completa cuando el navegador lo permita</span></div><div class="shortcut"><kbd>Esc</kbd><span>Cerrar ayuda o salir de pantalla completa</span></div><button id="okHelp" class="btn btn-primary" type="button">Entendido</button></dialog>
+</body>
+</html>
